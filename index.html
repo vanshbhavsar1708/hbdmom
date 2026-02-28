@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Mom ❤️</title>
+
+<style>
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff9ec4, #ff4fa3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Floating Hearts */
+body::before {
+    content: "❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️";
+    position: absolute;
+    font-size: 28px;
+    opacity: 0.2;
+    width: 100%;
+    text-align: center;
+    top: 45%;
+    pointer-events: none;
+}
+
+/* Click Text */
+.click-text {
+    position: absolute;
+    top: 20%;
+    text-align: center;
+    font-size: 22px;
+    color: white;
+    font-weight: bold;
+    z-index: 5;
+}
+
+.arrow {
+    font-size: 35px;
+    animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+}
+
+/* Gift Image */
+.gift {
+    width: 150px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* Burst Photos */
+.burst-photo {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    object-fit: cover;
+    transition: 2s ease;
+    pointer-events: none;
+}
+
+/* Slideshow */
+.slide-photo {
+    position: absolute;
+    width: 90vw;
+    max-width: 420px;
+    max-height: 75vh;
+
+    object-fit: contain;   /* IMPORTANT */
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+
+    opacity: 0;
+    transform: scale(1.2);
+    transition: transform 3s ease, opacity 1s ease;
+}
+.message {
+    position: absolute;
+    top: 6%;
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    color: white;
+    font-weight: bold;
+    display: none;
+    z-index: 20;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="message">🎉 Happy Birthday Mom 🎂❤️</div>
+
+<div class="click-text">
+    Click Here 🎁
+    <div class="arrow">👇</div>
+</div>
+
+<img src="gift.png" class="gift" id="gift">
+
+<audio id="music" src="maa.mp3"></audio>
+
+<script>
+
+let total = 30;
+let current = 1;
+let interval;
+let music = document.getElementById("music");
+let gift = document.getElementById("gift");
+
+gift.addEventListener("click", startAnimation);
+
+function startAnimation() {
+
+    gift.style.display = "none";
+    document.querySelector(".click-text").style.display = "none";
+    document.querySelector(".message").style.display = "block";
+
+    music.play().catch(() => {});
+// Better Circular Burst Animation
+for(let i = 1; i <= total; i++) {
+
+    let img = document.createElement("img");
+    img.src = i + ".jpg";
+    img.className = "burst-photo";
+
+    img.style.top = "50%";
+    img.style.left = "50%";
+    img.style.transform = "translate(-50%, -50%) scale(0)";
+
+    document.body.appendChild(img);
+
+    let angle = (i / total) * (2 * Math.PI); // full circle
+    let radius = 250; // explosion distance
+
+    let x = Math.cos(angle) * radius;
+    let y = Math.sin(angle) * radius;
+
+    setTimeout(() => {
+        img.style.transform =
+            `translate(-50%, -50%) translate(${x}px, ${y}px) scale(1) rotate(${Math.random()*360}deg)`;
+    }, 100);
+
+    setTimeout(() => {
+        img.style.opacity = "0";
+    }, 2500);
+
+    setTimeout(() => {
+        img.remove();
+    }, 3000);
+}
+
+    setTimeout(() => {
+        startSlideshow();
+    }, 3500);
+}
+
+function startSlideshow() {
+
+    showPhoto();
+
+    interval = setInterval(() => {
+        if (!music.paused) {
+            current++;
+            if (current > total) current = 1;
+            showPhoto();
+        }
+    }, 4000);
+}
+
+function showPhoto() {
+
+    let old = document.querySelector(".slide-photo");
+    if (old) old.remove();
+
+    let img = document.createElement("img");
+  img.src = current + ".jpg";
+    img.className = "slide-photo";
+
+    document.body.appendChild(img);
+
+    setTimeout(() => {
+        img.style.opacity = "1";
+        img.style.transform = "scale(1)";
+    }, 100);
+}
+
+music.onended = function() {
+    clearInterval(interval);
+};
+
+</script>
+
+</body>
+</html>
